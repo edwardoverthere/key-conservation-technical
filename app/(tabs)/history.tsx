@@ -10,7 +10,7 @@ import { useGameHistory } from '../context/GameHistoryContext';
 import Board from '../components/Board';
 
 export default function GameHistory() {
-	const { games } = useGameHistory();
+	const { games, clearHistory } = useGameHistory();
 
 	const formatDate = (dateString: string) => {
 		return new Date(dateString).toLocaleDateString('en-US', {
@@ -33,7 +33,19 @@ export default function GameHistory() {
 
 	return (
 		<ScrollView style={styles.container}>
-			<Text style={styles.title}>Game History</Text>
+			<View style={styles.header}>
+				<Text style={styles.title}>Game History</Text>
+				{games.length > 0 && (
+					<TouchableOpacity
+						style={styles.clearButton}
+						onPress={clearHistory}
+					>
+						<Text style={styles.clearButtonText}>
+							Clear History
+						</Text>
+					</TouchableOpacity>
+				)}
+			</View>
 			{games.length === 0 ? (
 				<Text style={styles.emptyText}>No games played yet!</Text>
 			) : (
@@ -112,5 +124,23 @@ const styles = StyleSheet.create({
 	boardContainer: {
 		transform: [{ scale: 0.8 }],
 		alignItems: 'center',
+	},
+	header: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		paddingHorizontal: 16,
+		marginBottom: 20,
+	},
+	clearButton: {
+		backgroundColor: Colors.shared.accent,
+		paddingHorizontal: 12,
+		paddingVertical: 8,
+		borderRadius: 8,
+	},
+	clearButtonText: {
+		color: Colors.shared.buttonText,
+		fontSize: 14,
+		fontWeight: 'bold',
 	},
 });

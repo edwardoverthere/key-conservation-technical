@@ -1,13 +1,18 @@
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
-import { Colors } from '../constants/Colors';
+import Colors from '../constants/Colors';
 
 type SquareProps = {
 	value: string | null;
 	onPress: () => void;
+	disabled?: boolean;
 };
 
-const Square = ({ value, onPress }: SquareProps) => (
-	<TouchableOpacity style={styles.square} onPress={onPress}>
+const Square = ({ value, onPress, disabled }: SquareProps) => (
+	<TouchableOpacity
+		style={[styles.square, disabled && styles.squareDisabled]}
+		onPress={onPress}
+		disabled={disabled}
+	>
 		<Text style={styles.squareText}>
 			{value === 'X' ? '🐘' : value === 'O' ? '🦁' : ''}
 		</Text>
@@ -17,11 +22,16 @@ const Square = ({ value, onPress }: SquareProps) => (
 type BoardProps = {
 	squares: (string | null)[];
 	onSquarePress: (index: number) => void;
+	disabled?: boolean;
 };
 
-export const Board = ({ squares, onSquarePress }: BoardProps) => {
+const Board = ({ squares, onSquarePress, disabled = false }: BoardProps) => {
 	const renderSquare = (i: number) => (
-		<Square value={squares[i]} onPress={() => onSquarePress(i)} />
+		<Square
+			value={squares[i]}
+			onPress={() => !disabled && onSquarePress(i)}
+			disabled={disabled}
+		/>
 	);
 
 	return (
@@ -48,9 +58,9 @@ export const Board = ({ squares, onSquarePress }: BoardProps) => {
 const styles = StyleSheet.create({
 	board: {
 		padding: 10,
-		backgroundColor: Colors.background,
+		backgroundColor: Colors.shared.background,
 		borderRadius: 15,
-		shadowColor: Colors.secondary,
+		shadowColor: Colors.shared.secondary,
 		shadowOffset: {
 			width: 0,
 			height: 2,
@@ -66,7 +76,7 @@ const styles = StyleSheet.create({
 		width: 90,
 		height: 90,
 		borderWidth: 2,
-		borderColor: Colors.primary,
+		borderColor: Colors.shared.primary,
 		alignItems: 'center',
 		justifyContent: 'center',
 		margin: 4,
@@ -76,4 +86,9 @@ const styles = StyleSheet.create({
 	squareText: {
 		fontSize: 40,
 	},
+	squareDisabled: {
+		opacity: 0.8,
+	},
 });
+
+export default Board;

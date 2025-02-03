@@ -51,21 +51,27 @@ export default function CurrentMatch() {
 	};
 
 	const handleSquarePress = (i: number) => {
+		// First check if the square is already filled or if there's already a winner
 		if (calculateWinner(squares) || squares[i]) {
 			return;
 		}
 
+		// Update the board
 		const newSquares = squares.slice();
 		newSquares[i] = xIsNext ? 'X' : 'O';
 		setSquares(newSquares);
-		setXIsNext(!xIsNext);
 
 		// Check if game ended after this move
 		const winner = calculateWinner(newSquares);
 		const isDraw = !winner && newSquares.every((square) => square !== null);
+
+		// Handle game end if there's a winner or draw
 		if (winner || isDraw) {
 			handleGameEnd(winner, newSquares);
 		}
+
+		// Update turn
+		setXIsNext(!xIsNext);
 	};
 
 	const resetGame = () => {

@@ -3,7 +3,6 @@ import Board from '../components/Board';
 import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Colors from '../constants/Colors';
-import { FontAwesome5 } from '@expo/vector-icons';
 import { useGameHistory } from '../context/GameHistoryContext';
 
 export default function CurrentMatch() {

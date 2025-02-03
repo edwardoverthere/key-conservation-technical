@@ -13,7 +13,7 @@ const Square = ({ value, onPress, disabled }: SquareProps) => (
 		onPress={onPress}
 		disabled={disabled}
 	>
-		<Text style={styles.squareText}>
+		<Text style={[styles.squareText, disabled && styles.textDisabled]}>
 			{value === 'X' ? '🐘' : value === 'O' ? '🦁' : ''}
 		</Text>
 	</TouchableOpacity>
@@ -87,7 +87,11 @@ const styles = StyleSheet.create({
 		fontSize: 40,
 	},
 	squareDisabled: {
-		opacity: 0.8,
+		opacity: 0.9,
+		backgroundColor: Colors.shared.background,
+	},
+	textDisabled: {
+		opacity: 1,
 	},
 });
 

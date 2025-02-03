@@ -21,6 +21,16 @@ export default function GameHistory() {
 		});
 	};
 
+	const renderGameResult = (game: GameResult) => {
+		const winner =
+			game.winner === 'X' ? '🐘' : game.winner === 'O' ? '🦁' : null;
+		return game.winner === 'draw'
+			? 'Draw!'
+			: winner
+			? `${winner} Wins!`
+			: '';
+	};
+
 	return (
 		<ScrollView style={styles.container}>
 			<Text style={styles.title}>Game History</Text>
@@ -34,22 +44,12 @@ export default function GameHistory() {
 								{formatDate(game.date)}
 							</Text>
 							<Text style={styles.resultText}>
-								{game.winner === 'draw'
-									? 'Draw!'
-									: game.winner === 'X'
-									? '🐘 Wins!'
-									: '🦁 Wins!'}
+								{renderGameResult(game)}
 							</Text>
 						</View>
 						<View style={styles.boardContainer}>
 							<Board
-								squares={game.finalBoard.map((value) =>
-									value === null
-										? null
-										: value === 'X'
-										? '🐘'
-										: '🦁'
-								)}
+								squares={game.finalBoard}
 								onSquarePress={() => {}}
 								disabled
 							/>

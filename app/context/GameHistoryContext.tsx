@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from 'react';
-import { GameResult } from '../types/game.d';
+import type { GameResult } from '../types/game';
 
 type GameHistoryContextType = {
 	games: GameResult[];
@@ -10,11 +10,7 @@ const GameHistoryContext = createContext<GameHistoryContextType | undefined>(
 	undefined
 );
 
-export function GameHistoryProvider({
-	children,
-}: {
-	children: React.ReactNode;
-}) {
+function GameHistoryProvider({ children }: { children: React.ReactNode }) {
 	const [games, setGames] = useState<GameResult[]>([]);
 
 	const addGame = (game: Omit<GameResult, 'id' | 'date'>) => {
@@ -33,7 +29,7 @@ export function GameHistoryProvider({
 	);
 }
 
-export const useGameHistory = () => {
+const useGameHistory = () => {
 	const context = useContext(GameHistoryContext);
 	if (!context) {
 		throw new Error(
@@ -42,3 +38,6 @@ export const useGameHistory = () => {
 	}
 	return context;
 };
+
+export { useGameHistory };
+export default GameHistoryProvider;

@@ -38,10 +38,13 @@ export default function CurrentMatch() {
 		return null;
 	};
 
-	const handleGameEnd = (winner: string | null) => {
+	const handleGameEnd = (
+		winner: string | null,
+		finalBoard: (string | null)[]
+	) => {
 		addGame({
 			winner: winner || (isDraw ? 'draw' : null),
-			finalBoard: squares,
+			finalBoard: [...finalBoard],
 			player1: '🐘',
 			player2: '🦁',
 		});
@@ -61,7 +64,7 @@ export default function CurrentMatch() {
 		const winner = calculateWinner(newSquares);
 		const isDraw = !winner && newSquares.every((square) => square !== null);
 		if (winner || isDraw) {
-			handleGameEnd(winner);
+			handleGameEnd(winner, newSquares);
 		}
 	};
 

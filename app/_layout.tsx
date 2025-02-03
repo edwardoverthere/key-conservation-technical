@@ -5,7 +5,7 @@ import {
 	DarkTheme,
 	DefaultTheme,
 } from '@react-navigation/native';
-import { GameHistoryProvider } from './context/GameHistoryContext';
+import GameHistoryProvider from './context/GameHistoryContext';
 
 export default function RootLayout() {
 	const colorScheme = useColorScheme();

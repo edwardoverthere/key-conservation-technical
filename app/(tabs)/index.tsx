@@ -1,74 +1,103 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Board } from '../components/Board';
+import { useState } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+export default function CurrentMatch() {
+	const [squares, setSquares] = useState<(string | null)[]>(
+		Array(9).fill(null)
+	);
+	const [xIsNext, setXIsNext] = useState(true);
 
-export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
-  );
+	const calculateWinner = (squares: (string | null)[]) => {
+		const lines = [
+			[0, 1, 2],
+			[3, 4, 5],
+			[6, 7, 8],
+			[0, 3, 6],
+			[1, 4, 7],
+			[2, 5, 8],
+			[0, 4, 8],
+			[2, 4, 6],
+		];
+
+		for (let i = 0; i < lines.length; i++) {
+			const [a, b, c] = lines[i];
+			if (
+				squares[a] &&
+				squares[a] === squares[b] &&
+				squares[a] === squares[c]
+			) {
+				return squares[a];
+			}
+		}
+		return null;
+	};
+
+	const handleSquarePress = (i: number) => {
+		if (calculateWinner(squares) || squares[i]) {
+			return;
+		}
+
+		const newSquares = squares.slice();
+		newSquares[i] = xIsNext ? 'X' : 'O';
+		setSquares(newSquares);
+		setXIsNext(!xIsNext);
+	};
+
+	const resetGame = () => {
+		setSquares(Array(9).fill(null));
+		setXIsNext(true);
+	};
+
+	const winner = calculateWinner(squares);
+	const isDraw = !winner && squares.every((square) => square !== null);
+	const status = winner
+		? `Winner: ${winner}`
+		: isDraw
+		? 'Game Draw!'
+		: `Next player: ${xIsNext ? 'X' : 'O'}`;
+
+	return (
+		<SafeAreaView style={styles.safeArea}>
+			<View style={styles.container}>
+				<Text style={styles.status}>{status}</Text>
+				<Board squares={squares} onSquarePress={handleSquarePress} />
+				<TouchableOpacity
+					style={styles.resetButton}
+					onPress={resetGame}
+				>
+					<Text style={styles.resetButtonText}>Reset Game</Text>
+				</TouchableOpacity>
+			</View>
+		</SafeAreaView>
+	);
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
+	safeArea: {
+		flex: 1,
+		backgroundColor: '#f5f5f5',
+	},
+	container: {
+		flex: 1,
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
+	status: {
+		marginBottom: 20,
+		fontSize: 24,
+		fontWeight: 'bold',
+	},
+	resetButton: {
+		marginTop: 20,
+		padding: 10,
+		backgroundColor: '#007AFF',
+		borderRadius: 5,
+	},
+	resetButtonText: {
+		color: '#fff',
+		fontSize: 16,
+		fontWeight: 'bold',
+	},
 });
